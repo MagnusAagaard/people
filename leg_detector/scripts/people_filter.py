@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import rospy
 from people_msgs.msg import PositionMeasurementArray
 from nav_msgs.msg import OccupancyGrid
