@@ -1,0 +1,14 @@
+<launch>
+    <arg name="map_frame"                     default="map" />
+    <arg name="fixed_frame"                   default="odom_comb" />
+    <arg name="laser_frame"                   default="scan" />
+    <arg name="filtered_people_topic"         default="~people_tracker_measurements" />
+    <arg name="dist_from_wall_lim"            default="0.1" />
+    <node pkg="leg_detector" type="people_filter.py" name="people_filter" output="screen" >
+        <param name="map_frame"                 value="$(arg map_frame)" />
+        <param name="fixed_frame"               value="$(arg fixed_frame)" />
+        <param name="laser_frame"               value="$(arg laser_frame)" />
+        <param name="filtered_people_topic"     value="$(arg filtered_people_topic)" />
+        <param name="dist_from_wall_lim"        value="$(arg dist_from_wall_lim)" />
+    </node>
+</launch>
