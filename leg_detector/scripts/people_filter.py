@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 import rospy
 from people_msgs.msg import PositionMeasurementArray
 from nav_msgs.msg import OccupancyGrid
@@ -31,9 +31,9 @@ class PeopleFilter:
         map_sub = rospy.Subscriber(self.map_frame, OccupancyGrid, self.__map_cb)
 
     def __init_publishers(self):
-        self.vis_pub = rospy.Publisher('~visualisation', Marker, queue_size=1)
+        self.map_vis_pub = rospy.Publisher('~visualisation', Marker, queue_size=1)
         self.filtered_people_vis_pub = rospy.Publisher('~people_visualisation', Marker, queue_size=1)
-        filtered_people_topic = rospy.get_param('filtered_people_topic', '~filtered_people_topic')
+        filtered_people_topic = rospy.get_param('~filtered_people_topic', '~filtered_people_topic')
         self.filtered_people_pub = rospy.Publisher(filtered_people_topic, PositionMeasurementArray, queue_size=1)
 
     def __people_cb(self, msg):
@@ -53,11 +53,14 @@ class PeopleFilter:
         filtered_people = []
         for person in msg.people:
             person_pt_stamped = PointStamped(header=person.header, point=person.pos)
-            transformed_pt = self.listener.transformPoint(self.map_frame, person_pt_stamped)
-            if self.dist_to_wall(transformed_pt.point) > self.dist_from_wall_lim:
-                pt_array.append(transformed_pt.point)
-                color_array.append(COLOR)
-                filtered_people.append(person)
+            try:
+                transformed_pt = self.listener.transformPoint(self.map_frame, person_pt_stamped)
+                if self.dist_to_wall(transformed_pt.point) > self.dist_from_wall_lim:
+                    pt_array.append(transformed_pt.point)
+                    color_array.append(COLOR)
+                    filtered_people.append(person)
+            except Exception as e:
+                rospy.logwarn(e)
         marker.points = pt_array
         marker.colors = color_array
         if len(pt_array):
@@ -95,7 +98,7 @@ class PeopleFilter:
         self.marker.points = pt_array
         self.marker.colors = color_array
         self.wall_points = pt_array
-        self.vis_pub.publish(self.marker)
+        self.map_vis_pub.publish(self.marker)
 
     def dist_between_points(self, pt1, pt2):
         x1, y1 = pt1.x, pt1.y
@@ -120,10 +123,6 @@ def main():
     rospy.init_node('people_filter', log_level=rospy.INFO)
     pf = PeopleFilter()
     rospy.spin()
-    #r = rospy.Rate(10)
-    #while not rospy.is_shutdown():
-    #    pf.publish_points()
-    #    r.sleep()
 
 if __name__ == "__main__":
     main()
