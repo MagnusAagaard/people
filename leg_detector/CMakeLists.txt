@@ -5,6 +5,7 @@ project(leg_detector)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(BFL REQUIRED orocos-bfl)
 link_directories(${BFL_LIBRARY_DIRS})
+find_package(OpenCV 4.1 REQUIRED)
 
 # Look for Bullet
 pkg_check_modules(BULLET bullet)
@@ -46,7 +47,7 @@ catkin_package(
 )
 
 include_directories(
-  include ${catkin_INCLUDE_DIRS} ${BFL_INCLUDE_DIRS} ${BULLET_INCLUDE_DIRS}
+  include ${catkin_INCLUDE_DIRS} ${BFL_INCLUDE_DIRS} ${BULLET_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS}
 )
 
 add_executable(leg_detector
@@ -57,7 +58,7 @@ add_executable(leg_detector
 add_dependencies(leg_detector ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(leg_detector
-   ${catkin_LIBRARIES} ${BFL_LIBRARIES} ${BULLET_LIBRARIES}
+   ${catkin_LIBRARIES} ${BFL_LIBRARIES} ${BULLET_LIBRARIES} ${OpenCV_LIBS}
 )
 
 if(CATKIN_ENABLE_TESTING)

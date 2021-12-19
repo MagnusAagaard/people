@@ -44,9 +44,8 @@
 #include <string>
 #include <vector>
 
-#include <opencv/cv.hpp>
-#include <opencv/cxcore.hpp>
-#include <opencv/cvaux.hpp>
+#include <opencv2/core/core_c.h>
+#include <opencv2/objdetect.hpp>
 
 #include <image_geometry/stereo_camera_model.h>
 #include <boost/thread/mutex.hpp>

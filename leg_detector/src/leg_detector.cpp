@@ -37,9 +37,8 @@
 #include <leg_detector/laser_processor.h>
 #include <leg_detector/calc_leg_features.h>
 
-#include <opencv/cxcore.h>
-#include <opencv/cv.h>
-#include <opencv/ml.h>
+#include <opencv2/core/core_c.h>
+#include <opencv2/ml.hpp>
 
 #include <people_msgs/PositionMeasurement.h>
 #include <people_msgs/PositionMeasurementArray.h>
@@ -239,7 +238,7 @@ public:
 
   int mask_count_;
 
-  // cv::ml::RTrees forest;
+  //cv::ml::RTrees forest;
   cv::Ptr<cv::ml::RTrees> forest;
 
   float connected_thresh_;
@@ -284,15 +283,28 @@ public:
     {
       forest = cv::ml::RTrees::create();
       cv::String feature_file = cv::String(g_argv[1]);
-      forest = cv::ml::StatModel::load<cv::ml::RTrees>(feature_file);
-      feat_count_ = forest->getVarCount();
-      printf("Loaded forest with %d features: %s\n", feat_count_, g_argv[1]);
+      cv::String feature_file = cv::String("/home/jetson1/catkin_ws/src/people/leg_detector/config/trained_leg_detector.yaml");
+      std::cout << feature_file << std::endl;
+      try
+      {
+        forest = cv::ml::StatModel::load<cv::ml::RTrees>(feature_file);
+        //forest.load(feature_file);
+        feat_count_ = forest.getVarCount();
+        printf("Loaded forest with %d features: %s\n", feat_count_, g_argv[1]);
+      }
+      catch( ... )
+      {
+        std::cout << "Error" << std::endl;
+        //std::cout << "exception caught: " << err_msg << std::endl;
+      }
     }
     else
     {
+      std::cout << "HERE?" << std::endl;
       printf("Please provide a trained random forests classifier as an input.\n");
       ros::shutdown();
     }
+    std::cout << "Or here?" << std::endl;
 
     nh_.param<bool>("use_seeds", use_seeds_, !true);
 

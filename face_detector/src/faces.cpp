@@ -46,6 +46,7 @@
 #include <ros/time.h>
 #include <ros/console.h>
 
+#include <opencv2/imgproc/imgproc_c.h>
 #include <string>
 #include <vector>
 
@@ -173,7 +174,7 @@ void Faces::faceDetectionThreadDisparity(uint i)
     int this_min_face_size = static_cast<int>(floor(fabs(p2_2.x - p2_1.x)));
 
     std::vector<cv::Rect> faces_vec;
-    cascade_.detectMultiScale(cv_image_gray_, faces_vec,  1.2, 2, CV_HAAR_DO_CANNY_PRUNING,
+    cascade_.detectMultiScale(cv_image_gray_, faces_vec,  1.2, 2, cv::CASCADE_DO_CANNY_PRUNING,
                               cv::Size(this_min_face_size, this_min_face_size));
 
     // Filter the faces using depth information, if available.
@@ -343,7 +344,7 @@ void Faces::faceDetectionThreadDepth(uint i)
     int this_min_face_size = static_cast<int>(floor(fabs(p2_2.x - p2_1.x)));
 
     std::vector<cv::Rect> faces_vec;
-    cascade_.detectMultiScale(cv_image_gray_, faces_vec,  1.2, 2, CV_HAAR_DO_CANNY_PRUNING,
+    cascade_.detectMultiScale(cv_image_gray_, faces_vec,  1.2, 2, cv::CASCADE_DO_CANNY_PRUNING,
                               cv::Size(this_min_face_size, this_min_face_size));
 
     // Filter the faces using depth information, if available.
