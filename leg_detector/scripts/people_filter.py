@@ -20,7 +20,7 @@ class PeopleFilter:
 
     def __init_params(self):
         self.map_frame = rospy.get_param('~map_frame', 'map')
-        self.odom_frame = rospy.get_param('~static_frame', 'odom_comb')
+        self.odom_frame = rospy.get_param('~fixed_frame', 'odom_comb')
         self.laser_frame = rospy.get_param('~laser_frame', 'scan')
         self.dist_from_wall_lim = rospy.get_param('~dist_from_wall_lim', 0.2)
         self.listener = TransformListener()
